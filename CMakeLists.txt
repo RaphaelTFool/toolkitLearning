@@ -1,0 +1,16 @@
+﻿set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin/debug)
+aux_source_directory(. DEBUG_SRC_LIST)
+foreach(DEBUG_SRC ${DEBUG_SRC_LIST})
+    STRING(REGEX REPLACE "^\\./|\\.c[a-zA-Z0-9_]*$" "" DEBUG_EXE_NAME ${DEBUG_SRC})
+    message(STATUS "添加测试程序:${DEBUG_EXE_NAME}")
+    add_executable(${DEBUG_EXE_NAME} ${DEBUG_SRC})
+
+    if(ANDROID)
+        target_link_libraries(${DEBUG_EXE_NAME} ${CMAKE_PROJECT_NAME}_static ${LINK_LIB_LIST})
+    elseif(WIN32)
+        target_link_libraries(${DEBUG_EXE_NAME} ${CMAKE_PROJECT_NAME}_shared ${LINK_LIB_LIST})
+    else()
+        target_link_libraries(${DEBUG_EXE_NAME} ${CMAKE_PROJECT_NAME}_shared ${LINK_LIB_LIST} pthread)
+    endif()
+
+endforeach(DEBUG_SRC ${DEBUG_SRC_LIST})
